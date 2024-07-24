@@ -57,7 +57,6 @@
                 }
                 const data = await response.json();
                 resultsData = data.values;
-                displayResults(resultsData);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 document.getElementById('results').innerText = 'Error fetching data';
@@ -66,14 +65,16 @@
 
         function displayResults(results) {
             const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = ''; // Clear previous results
+
             if (!results || results.length === 0) {
                 resultsDiv.innerText = 'No data available';
                 return;
             }
-            resultsDiv.innerHTML = '<table><tr><th>Name</th><th>Roll Number</th><th>Result</th></tr>';
 
-            results.slice(1).forEach(row => {
-                resultsDiv.innerHTML += `
+            let tableHtml = '<table><tr><th>Name</th><th>Roll Number</th><th>Result</th></tr>';
+            results.forEach(row => {
+                tableHtml += `
                     <tr>
                         <td>${row[0]}</td>
                         <td>${row[1]}</td>
@@ -81,8 +82,9 @@
                     </tr>
                 `;
             });
+            tableHtml += '</table>';
 
-            resultsDiv.innerHTML += '</table>';
+            resultsDiv.innerHTML = tableHtml;
         }
 
         function searchResult() {
