@@ -4,10 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Results</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        input {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 300px;
+            font-size: 16px;
+        }
+        button {
+            padding: 8px;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <h1>Student Results</h1>
+    <input type="text" id="rollNumberInput" placeholder="Enter roll number">
+    <button onclick="searchResult()">Search</button>
     <div id="results"></div>
 
     <script>
@@ -15,14 +47,29 @@
         const apiKey = 'AIzaSyC-wylWnO4XxBbciUF1FwySQaZNM66j6sg';
         const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
 
+        let resultsData = [];
+
         async function fetchResults() {
-            const response = await fetch(baseUrl);
-            const data = await response.json();
-            displayResults(data.values);
+            try {
+                const response = await fetch(baseUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                resultsData = data.values;
+                displayResults(resultsData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('results').innerText = 'Error fetching data';
+            }
         }
 
         function displayResults(results) {
             const resultsDiv = document.getElementById('results');
+            if (!results || results.length === 0) {
+                resultsDiv.innerText = 'No data available';
+                return;
+            }
             resultsDiv.innerHTML = '<table><tr><th>Name</th><th>Roll Number</th><th>Result</th></tr>';
 
             results.slice(1).forEach(row => {
@@ -36,6 +83,12 @@
             });
 
             resultsDiv.innerHTML += '</table>';
+        }
+
+        function searchResult() {
+            const rollNumber = document.getElementById('rollNumberInput').value;
+            const filteredResults = resultsData.filter(row => row[1] === rollNumber);
+            displayResults(filteredResults);
         }
 
         fetchResults();
