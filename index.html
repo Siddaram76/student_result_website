@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Results</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Student Results</h1>
+    <div id="results"></div>
+
+    <script>
+        const sheetId = '2PACX-1vQte815OGlDw9SdFuhtZry3uNP4r6Gf6LWON7awAPyXaZIPT6NqSNTYBJlYGnBqp7kbJcowtgp-Mbq1';
+        const apiKey = 'AIzaSyC-wylWnO4XxBbciUF1FwySQaZNM66j6sg';
+        const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
+
+        async function fetchResults() {
+            const response = await fetch(baseUrl);
+            const data = await response.json();
+            displayResults(data.values);
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<table><tr><th>Name</th><th>Roll Number</th><th>Result</th></tr>';
+
+            results.slice(1).forEach(row => {
+                resultsDiv.innerHTML += `
+                    <tr>
+                        <td>${row[0]}</td>
+                        <td>${row[1]}</td>
+                        <td>${row[2]}</td>
+                    </tr>
+                `;
+            });
+
+            resultsDiv.innerHTML += '</table>';
+        }
+
+        fetchResults();
+    </script>
+</body>
+</html>
