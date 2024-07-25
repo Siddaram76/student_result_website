@@ -12,44 +12,40 @@
             background-color: #66F33E;
             color: #333;
         }
-      h1 {
+        h1 {
             color: #4a90e2;
             text-align: center;
         }
-       h2 {
+ h2 {
             color: #11B33E;
-            //text-align: center;
-        }
- .container {
+}
+        .container {
             max-width: 800px;
             margin: 0 auto;
-            background-color: #66F33E;
+            background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }      
-  input {
+        }
+        select, input, button {
             padding: 10px;
-            width: calc(100% - 22px);
             margin-bottom: 10px;
+            width: calc(100% - 22px);
             font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
         }
         button {
-            padding: 10px 20px;
-            font-size: 16px;
             color: #fff;
             background-color: #4a90e2;
             border: none;
-            border-radius: 4px;
             cursor: pointer;
         }
         button:hover {
             background-color: #357abd;
         }
-         table {
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
@@ -68,23 +64,31 @@
         }
     </style>
 </head>
-<body >
-    <h1>MILLENNIUM PU COLLEGE , KALABURGI</h1>
+<body>
+    <div class="container">
+<h1>MILLENNIUM COMPOSITE PU COLLEGE , KALABURGI</h1>
    <marquee><h2> QUARTERLY EXAM / MONTHLY TEST 2 RESULT TO BE ANNOUNCED.........!!!!</h2></marquee>
     <HR>
-    <h1>Student Results</h1>
-    <input type="text" id="rollNumberInput" placeholder="Enter roll number">
-    <button onclick="searchResult()">Search</button>
-    <div id="results"></div>
+        <h1>Student Results</h1>
+        <select id="courseSelect">
+            <option value="">Select Course</option>
+            <option value="Course1">SCIENCE 1</option>
+            <option value="Course2">SCIENCE 2</option>
+            <option value="Course3">COMMERCE 3</option>
+            <!-- Add more options as needed -->
+        </select>
+        <input type="text" id="rollNumberInput" placeholder="Enter roll number">
+        <button onclick="searchResult()">Search</button>
+        <div id="results"></div>
+    </div>
 
     <script>
-        const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
+       const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
         const apiKey = 'AIzaSyC-wylWnO4XxBbciUF1FwySQaZNM66j6sg';
-        const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Sheet1?key=${apiKey}`;
-
         let resultsData = [];
 
-        async function fetchResults() {
+        async function fetchResults(sheetName) {
+            const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
             try {
                 const response = await fetch(baseUrl);
                 if (!response.ok) {
@@ -123,12 +127,19 @@
         }
 
         function searchResult() {
+            const course = document.getElementById('courseSelect').value;
             const rollNumber = document.getElementById('rollNumberInput').value;
-            const filteredResults = resultsData.filter(row => row[1] === rollNumber);
-            displayResults(filteredResults);
-        }
 
-        fetchResults();
+            if (course === '') {
+                alert('Please select a course');
+                return;
+            }
+
+            fetchResults(course).then(() => {
+                const filteredResults = resultsData.filter(row => row[1] === rollNumber);
+                displayResults(filteredResults);
+            });
+        }
     </script>
 </body>
 </html>
