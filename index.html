@@ -9,16 +9,13 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #66F33E;
+            background-color: #f7f9fc;
             color: #333;
         }
         h1 {
             color: #4a90e2;
             text-align: center;
         }
- h2 {
-            color: #11B33E;
-}
         .container {
             max-width: 800px;
             margin: 0 auto;
@@ -45,22 +42,32 @@
         button:hover {
             background-color: #357abd;
         }
-        table {
+        .result-card {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        .result-card h2 {
+            margin-top: 0;
+            color: #4a90e2;
+        }
+        .result-card table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
-        th, td {
+        .result-card th, .result-card td {
             border: 1px solid #ddd;
-            padding: 12px;
+            padding: 10px;
             text-align: left;
         }
-        th {
-            background-color: #4a90e2;
-            color: #fff;
-        }
-        tr:nth-child(even) {
+        .result-card th {
             background-color: #f2f2f2;
+        }
+        .counter {
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -81,10 +88,14 @@
         <input type="text" id="rollNumberInput" placeholder="Enter roll number">
         <button onclick="searchResult()">Search</button>
         <div id="results"></div>
+        <div class="counter">
+            <!-- FreeCounter code will go here -->
+            <script type="text/javascript" src="https://www.freecounterstat.com/fc.php?id=YOUR_COUNTER_ID"></script>
+        </div>
     </div>
 
     <script>
-       const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
+         const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
         const apiKey = 'AIzaSyC-wylWnO4XxBbciUF1FwySQaZNM66j6sg';
         let resultsData = [];
 
@@ -112,19 +123,27 @@
                 return;
             }
 
-            let tableHtml = '<table><tr><th>Name</th><th>Roll Number</th><th>Result</th></tr>';
             results.forEach(row => {
-                tableHtml += `
-                    <tr>
-                        <td>${row[0]}</td>
-                        <td>${row[1]}</td>
-                        <td>${row[2]}</td>
-                    </tr>
-                `;
-            });
-            tableHtml += '</table>';
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
 
-            resultsDiv.innerHTML = tableHtml;
+                resultCard.innerHTML = `
+                    <h2>${row[0]}</h2>
+                    <p><strong>Roll Number:</strong> ${row[1]}</p>
+                    <table>
+                        <tr><th>Subject</th><th>Marks</th></tr>
+                        <tr><td>Subject 1</td><td>${row[2]}</td></tr>
+                        <tr><td>Subject 2</td><td>${row[3]}</td></tr>
+                        <tr><td>Subject 3</td><td>${row[4]}</td></tr>
+                        <tr><td>Subject 4</td><td>${row[5]}</td></tr>
+                        <tr><td>Subject 5</td><td>${row[6]}</td></tr>
+                        <tr><td>Subject 6</td><td>${row[7]}</td></tr>
+                        <tr><th>Total</th><td>${row[8]}</td></tr>
+                    </table>
+                `;
+
+                resultsDiv.appendChild(resultCard);
+            });
         }
 
         function searchResult() {
