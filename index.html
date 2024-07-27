@@ -9,7 +9,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f7f9fc;
+            background-color: #66F33E;
             color: #333;
         }
         h1 {
@@ -73,12 +73,16 @@
 </head>
 <body>
     <div class="container">
+<h1>MILLENNIUM COMPOSITE PU COLLEGE , KALABURGI</h1>
+   <marquee><h2> QUARTERLY EXAM / MONTHLY TEST 2 RESULT TO BE ANNOUNCED.........!!!!</h2></marquee>
+    <HR>
         <h1>Student Results</h1>
         <select id="courseSelect">
             <option value="">Select Course</option>
-            <option value="Course1">Course 1</option>
-            <option value="Course2">Course 2</option>
-            <option value="Course3">Course 3</option>
+            <option value="Course1">SCIENCE 1</option>
+            <option value="Course2">SCIENCE 2</option>
+            <option value="Course3">COMMERCE 1</option>
+            <option value="Course4">COMMERCE 2</option>
             <!-- Add more options as needed -->
         </select>
         <input type="text" id="rollNumberInput" placeholder="Enter roll number">
@@ -91,20 +95,18 @@
     </div>
 
     <script>
-        const sheetId = 'YOUR_SHEET_ID'; // Replace with your Google Sheet ID
-        const apiKey = 'YOUR_API_KEY';   // Replace with your API key
+         const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
+        const apiKey = 'AIzaSyC-wylWnO4XxBbciUF1FwySQaZNM66j6sg';
         let resultsData = [];
 
         async function fetchResults(sheetName) {
-            const range = encodeURIComponent(sheetName + '!A1:H'); // Adjust range if necessary
-            const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+            const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
             try {
                 const response = await fetch(baseUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                console.log('Fetched data:', data); // Debugging log
                 resultsData = data.values;
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -121,28 +123,25 @@
                 return;
             }
 
-            const headers = results[0]; // The first row should contain headers
-            console.log('Headers:', headers); // Debugging log
-
-            results.slice(1).forEach(row => {
+            results.forEach(row => {
                 const resultCard = document.createElement('div');
                 resultCard.className = 'result-card';
 
-                let tableHtml = `
-                    <h2>${row[0]}</h2>
+                resultCard.innerHTML = `
+                    <h2>Name: ${row[0]}</h2>
                     <p><strong>Roll Number:</strong> ${row[1]}</p>
                     <table>
-                        <tr><th>${headers[2]}</th><td>${row[2]}</td></tr>
-                        <tr><th>${headers[3]}</th><td>${row[3]}</td></tr>
-                        <tr><th>${headers[4]}</th><td>${row[4]}</td></tr>
-                        <tr><th>${headers[5]}</th><td>${row[5]}</td></tr>
-                        <tr><th>${headers[6]}</th><td>${row[6]}</td></tr>
-                        <tr><th>${headers[7]}</th><td>${row[7]}</td></tr>
+                        <tr><th>Subject</th><th>Marks</th></tr>
+                        <tr><td>LANG 1</td><td>${row[2]}</td></tr>
+                        <tr><td>LANG 2</td><td>${row[3]}</td></tr>
+                        <tr><td>PHY/ECO </td><td>${row[4]}</td></tr>
+                        <tr><td>CHE/BS </td><td>${row[5]}</td></tr>
+                        <tr><td>MATHS/ACC </td><td>${row[6]}</td></tr>
+                        <tr><td>BIO/CS </td><td>${row[7]}</td></tr>
                         <tr><th>Total</th><td>${row[8]}</td></tr>
                     </table>
                 `;
 
-                resultCard.innerHTML = tableHtml;
                 resultsDiv.appendChild(resultCard);
             });
         }
@@ -157,9 +156,7 @@
             }
 
             fetchResults(course).then(() => {
-                console.log('Results Data:', resultsData); // Debugging log
                 const filteredResults = resultsData.filter(row => row[1] === rollNumber);
-                console.log('Filtered Results:', filteredResults); // Debugging log
                 displayResults(filteredResults);
             });
         }
