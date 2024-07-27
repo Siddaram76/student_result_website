@@ -123,25 +123,26 @@
                 return;
             }
 
-            results.forEach(row => {
+            const headers = results[0]; // The first row should contain headers
+            results.slice(1).forEach(row => {
                 const resultCard = document.createElement('div');
                 resultCard.className = 'result-card';
 
-                resultCard.innerHTML = `
+                let tableHtml = `
                     <h2>${row[0]}</h2>
                     <p><strong>Roll Number:</strong> ${row[1]}</p>
                     <table>
-                        <tr><th>Subject</th><th>Marks</th></tr>
-                        <tr><td>LANG 1</td><td>${row[2]}</td></tr>
-                        <tr><td>LANG 2</td><td>${row[3]}</td></tr>
-                        <tr><td>PHY/ECO 3</td><td>${row[4]}</td></tr>
-                        <tr><td>CHE/BS 4</td><td>${row[5]}</td></tr>
-                        <tr><td>MATHS/ACC 5</td><td>${row[6]}</td></tr>
-                        <tr><td>BIO/CS 6</td><td>${row[7]}</td></tr>
+                        <tr><th>${headers[2]}</th><td>${row[2]}</td></tr>
+                        <tr><th>${headers[3]}</th><td>${row[3]}</td></tr>
+                        <tr><th>${headers[4]}</th><td>${row[4]}</td></tr>
+                        <tr><th>${headers[5]}</th><td>${row[5]}</td></tr>
+                        <tr><th>${headers[6]}</th><td>${row[6]}</td></tr>
+                        <tr><th>${headers[7]}</th><td>${row[7]}</td></tr>
                         <tr><th>Total</th><td>${row[8]}</td></tr>
                     </table>
                 `;
 
+                resultCard.innerHTML = tableHtml;
                 resultsDiv.appendChild(resultCard);
             });
         }
