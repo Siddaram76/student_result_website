@@ -88,11 +88,14 @@
         <input type="text" id="rollNumberInput" placeholder="Enter roll number">
         <button onclick="searchResult()">Search</button>
         <div id="results"></div>
-       
+        <div class="counter">
+            <!-- FreeCounter code will go here -->
+            <script type="text/javascript" src="https://www.freecounterstat.com/fc.php?id=YOUR_COUNTER_ID"></script>
+        </div>
     </div>
 
     <script>
-        const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
+         const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
         const apiKey = 'AIzaSyC-wylWnO4XxBbciUF1FwySQaZNM66j6sg';
         let resultsData = [];
 
@@ -120,26 +123,25 @@
                 return;
             }
 
-            const headers = results[0]; // The first row should contain headers
-            results.slice(1).forEach(row => {
+            results.forEach(row => {
                 const resultCard = document.createElement('div');
                 resultCard.className = 'result-card';
 
-                let tableHtml = `
+                resultCard.innerHTML = `
                     <h2>${row[0]}</h2>
                     <p><strong>Roll Number:</strong> ${row[1]}</p>
                     <table>
-                        <tr><th>${headers[2]}</th><td>${row[2]}</td></tr>
-                        <tr><th>${headers[3]}</th><td>${row[3]}</td></tr>
-                        <tr><th>${headers[4]}</th><td>${row[4]}</td></tr>
-                        <tr><th>${headers[5]}</th><td>${row[5]}</td></tr>
-                        <tr><th>${headers[6]}</th><td>${row[6]}</td></tr>
-                        <tr><th>${headers[7]}</th><td>${row[7]}</td></tr>
+                        <tr><th>Subject</th><th>Marks</th></tr>
+                        <tr><td>LANG 1</td><td>${row[2]}</td></tr>
+                        <tr><td>LANG 2</td><td>${row[3]}</td></tr>
+                        <tr><td>PHY/ECO 3</td><td>${row[4]}</td></tr>
+                        <tr><td>CHE/BS 4</td><td>${row[5]}</td></tr>
+                        <tr><td>MATHS/ACC 5</td><td>${row[6]}</td></tr>
+                        <tr><td>BIO/CS 6</td><td>${row[7]}</td></tr>
                         <tr><th>Total</th><td>${row[8]}</td></tr>
                     </table>
                 `;
 
-                resultCard.innerHTML = tableHtml;
                 resultsDiv.appendChild(resultCard);
             });
         }
