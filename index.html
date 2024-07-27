@@ -128,7 +128,7 @@
                 resultCard.className = 'result-card';
 
                 resultCard.innerHTML = `
-                    <h2>${row[0]}</h2>
+                    <h2>Name: ${row[0]}</h2>
                     <p><strong>Roll Number:</strong> ${row[1]}</p>
                     <table>
                         <tr><th>Subject</th><th>Marks</th></tr>
@@ -141,7 +141,7 @@
                         <tr><th>Total</th><td>${row[8]}</td></tr>
                     </table>
                 `;
-<h3>Congratulations........!!!!</h3>
+
                 resultsDiv.appendChild(resultCard);
             });
         }
