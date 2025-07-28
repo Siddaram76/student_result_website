@@ -1,168 +1,128 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>PU College Result Portal</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Results</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
             padding: 20px;
-            background-color: #66F33E;
-            color: #333;
-        }
-        h1 {
-            color: #4a90e2;
-            text-align: center;
         }
         .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
+            max-width: 600px;
+            margin: auto;
+            background: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0066cc;
         }
         select, input, button {
+            width: 100%;
             padding: 10px;
-            margin-bottom: 10px;
-            width: calc(100% - 22px);
+            margin: 10px 0;
             font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
         }
         button {
-            color: #fff;
-            background-color: #4a90e2;
+            background-color: #0066cc;
+            color: white;
             border: none;
             cursor: pointer;
         }
         button:hover {
-            background-color: #357abd;
+            background-color: #004c99;
         }
-        .result-card {
+        .result {
+            background-color: #e6f2ff;
+            border-left: 5px solid #3399ff;
+            padding: 15px;
             margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-        }
-        .result-card h2 {
-            margin-top: 0;
-            color: #4a90e2;
-        }
-        .result-card table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .result-card th, .result-card td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-        .result-card th {
-            background-color: #f2f2f2;
-        }
-        .counter {
-            text-align: center;
-            margin-top: 20px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>MILLENNIUM COMPOSITE PU COLLEGE, KALABURGI</h1>
-        <marquee><h2>QUARTERLY EXAM / MONTHLY TEST 2 RESULT TO BE ANNOUNCED.........!!!!</h2></marquee>
-        <hr>
-        <h1>Student Results</h1>
-        <select id="courseSelect">
-            <option value="">Select Course</option>
-            <option value="Course1">SCIENCE 1</option>
-            <option value="Course2">SCIENCE 2</option>
-            <option value="Course3">COMMERCE 1</option>
-            <option value="Course4">COMMERCE 2</option>
-        </select>
-        <input type="text" id="rollNumberInput" placeholder="Enter roll number">
-        <button onclick="searchResult()">Search</button>
-        <div id="results"></div>
-        <div class="counter">
-            <!-- FreeCounter code will go here -->
-            <script type="text/javascript" src="https://www.freecounterstat.com/fc.php?id=YOUR_COUNTER_ID"></script>
-        </div>
-    </div>
+<div class="container">
+    <h1>Millennium Composite PU College</h1>
+    <select id="course">
+        <option value="">Select Course</option>
+        <option value="Commerce 1">Commerce 1</option>
+        <option value="Commerce 2">Commerce 2</option>
+        <option value="Science 1">Science 1</option>
+        <option value="Science 2">Science 2</option>
+    </select>
+    <select id="subject">
+        <option value="">Select Subject</option>
+        <option value="Economics">Economics</option>
+        <option value="Business">Business</option>
+        <option value="Accountancy">Accountancy</option>
+        <option value="Computer Science">Computer Science</option>
+    </select>
+    <input type="text" id="rollNumber" placeholder="Enter Roll Number">
+    <button onclick="getResult()">Search</button>
 
-    <script>
-        const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
-        const apiKey = 'AIzaSyC-wylWnO4XxBbciUF1FwySQaZNM66j6sg';
-        let resultsData = [];
-        let columnHeaders = [];
+    <div id="result" class="result" style="display: none;"></div>
+</div>
 
-        async function fetchResults(sheetName) {
-            const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
-            try {
-                const response = await fetch(baseUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                resultsData = data.values;
-                columnHeaders = resultsData[0].map(header => header.trim()); // Trim whitespace from headers
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                document.getElementById('results').innerText = 'Error fetching data';
-            }
+<script>
+    const sheetId = "1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c";
+    const apiKey = "AIzaSyC-wylWnO4XxBbciUF1FwySQaZNM66j6sg";
+
+    async function getResult() {
+        const subject = document.getElementById("subject").value;
+        const roll = document.getElementById("rollNumber").value.trim();
+        const resultDiv = document.getElementById("result");
+        resultDiv.style.display = "none";
+        resultDiv.innerHTML = "";
+
+        if (!subject || !roll) {
+            alert("Please select subject and enter roll number.");
+            return;
         }
 
-        function displayResults(results) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = ''; // Clear previous results
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${subject}?key=${apiKey}`;
 
-            if (!results || results.length === 0) {
-                resultsDiv.innerText = 'No data available';
-                return;
-            }
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const rows = data.values;
+            const headers = rows[0];
 
-            results.forEach(row => {
-                const resultCard = document.createElement('div');
-                resultCard.className = 'result-card';
+            const rollIndex = headers.indexOf("ROLL_NO");
+            const nameIndex = headers.indexOf("Student Name");
+            const fatherIndex = headers.indexOf("Father Name");
+            const marksIndex = headers.indexOf("MARKS");
+            const gradeIndex = headers.indexOf("GRADE");
 
-                let tableRows = '';
-                for (let i = 2; i < columnHeaders.length; i++) {
-                    if (columnHeaders[i] !== 'Total') {
-                        tableRows += `<tr><td>${columnHeaders[i]}</td><td>${row[i]}</td></tr>`;
-                    }
-                }
+            const student = rows.find((row, i) => i > 0 && row[rollIndex] === roll);
 
-                resultCard.innerHTML = `
-                    <h2>Name: ${row[columnHeaders.indexOf('Name')]}</h2>
-                    <p><strong>Roll Number:</strong> ${row[columnHeaders.indexOf('Roll Number')]}</p>
-                    <table>
-                        <tr><th>Subject</th><th>Marks</th></tr>
-                        ${tableRows}
-                        <tr><th>Total</th><td>${row[columnHeaders.indexOf('Total')]}</td></tr>
-                    </table>
+            if (student) {
+                resultDiv.innerHTML = `
+                    <strong>Student Name:</strong> ${student[nameIndex]}<br>
+                    <strong>Father Name:</strong> ${student[fatherIndex]}<br>
+                    <strong>Roll Number:</strong> ${student[rollIndex]}<br>
+                    <strong>Subject:</strong> ${subject}<br>
+                    <strong>Marks:</strong> ${student[marksIndex]}<br>
+                    <strong>Grade:</strong> ${student[gradeIndex]}
                 `;
-
-                resultsDiv.appendChild(resultCard);
-            });
-        }
-
-        function searchResult() {
-            const course = document.getElementById('courseSelect').value;
-            const rollNumber = document.getElementById('rollNumberInput').value;
-
-            if (course === '') {
-                alert('Please select a course');
-                return;
+            } else {
+                resultDiv.innerHTML = `<strong>No record found for Roll No: ${roll} in ${subject}</strong>`;
             }
 
-            fetchResults(course).then(() => {
-                const filteredResults = resultsData.filter(row => row[columnHeaders.indexOf('Roll Number')] === rollNumber);
-                displayResults(filteredResults);
-            });
+            resultDiv.style.display = "block";
+        } catch (err) {
+            resultDiv.innerHTML = "<strong>Error fetching data. Please try again later.</strong>";
+            resultDiv.style.display = "block";
+            console.error(err);
         }
-    </script>
+    }
+</script>
 </body>
 </html>
