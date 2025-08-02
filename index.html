@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -563,7 +564,12 @@
                 <div class="input-group">
                     <label for="subject">Subject Selection</label>
                     <div class="input-wrapper">
-                        <select id="subject">
+                        
+    <select id="year">
+      <option value="1">1st Year</option>
+      <option value="2">2nd Year</option>
+    </select><br><br>
+    <select id="subject">
                             <option value="">Choose Your Subject</option>
                             <option value="Economics">Economics</option>
                             <option value="Business">Business Studies</option>
@@ -641,7 +647,7 @@
                 return;
             }
 
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${subject}?key=${apiKey}`;
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
 
             try {
                 // Add realistic loading delay
@@ -677,7 +683,7 @@
                         grade: student[gradeIndex] || 'N/A'
                     });
                 } else {
-                    showError(`No record found for Roll Number: ${roll} in ${subject}`);
+                    showError(`No record found for Roll Number: ${roll} in ${sheetName}`);
                 }
 
             } catch (err) {
