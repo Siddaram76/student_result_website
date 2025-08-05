@@ -3,142 +3,491 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Subject Result</title>
+  <title>Millennium Composite PU College - Test Results</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #dbeafe, #f0f9ff);
-      padding: 30px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      color: white;
+    }
+
+    .college-logo {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border-radius: 50%;
+      padding: 5px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .college-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+
+    .college-name {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .college-location {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 10px;
+    }
+
+    .portal-title {
+      font-size: 1.3rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 20px;
+      border-radius: 25px;
+      display: inline-block;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
     .container {
-      max-width: 600px;
-      margin: auto;
+      max-width: 700px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .search-title {
+      color: #2d3748;
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #4a5568;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .search-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .loading-container {
+      text-align: center;
+      margin-top: 30px;
+      display: none;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .result-card {
+      margin-top: 30px;
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      padding: 30px;
+      border-radius: 15px;
+      border-left: 5px solid #667eea;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      display: none;
+    }
+
+    .student-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .info-item {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .info-label {
+      font-size: 0.85rem;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .info-value {
+      font-size: 1.1rem;
+      color: #2d3748;
+      font-weight: 600;
+    }
+
+    .marks-section {
       background: white;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
       text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     }
-    h1 {
-      color: #1d4ed8;
+
+    .marks-display {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 10px;
     }
-    select, input, button {
-      margin: 10px 0;
-      padding: 12px;
-      font-size: 16px;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+
+    .grade-display {
+      font-size: 1.5rem;
+      font-weight: 600;
+      padding: 10px 25px;
+      border-radius: 25px;
+      display: inline-block;
+      margin-top: 10px;
     }
-    button {
-      background-color: #1d4ed8;
-      color: white;
-      cursor: pointer;
-    }
-    .result-card {
+
+    .grade-a { background: linear-gradient(135deg, #48bb78, #38a169); color: white; }
+    .grade-b { background: linear-gradient(135deg, #4299e1, #3182ce); color: white; }
+    .grade-c { background: linear-gradient(135deg, #ed8936, #dd6b20); color: white; }
+    .grade-f { background: linear-gradient(135deg, #f56565, #e53e3e); color: white; }
+
+    .error-message {
+      background: linear-gradient(135deg, #fed7d7, #feb2b2);
+      color: #c53030;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
       margin-top: 20px;
-      background-color: #e0f2fe;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: left;
+      border-left: 4px solid #f56565;
+      display: none;
+    }
+
+    .test-type-indicator {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .test-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .unit-test { background: linear-gradient(135deg, #fbb6ce, #f687b3); color: #702459; }
+    .monthly-test { background: linear-gradient(135deg, #90cdf4, #63b3ed); color: #2c5282; }
+
+    @media (max-width: 768px) {
+      .college-name {
+        font-size: 1.8rem;
+      }
+
+      .container {
+        padding: 25px;
+        margin: 0 10px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .student-info {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .marks-display {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="header">
+    <div class="college-logo">
+      <img src="C:\Users\admin\Desktop\logo.jpg" alt="Millennium College Logo">
+    </div>
+    <h1 class="college-name">Millennium Composite Pre University College</h1>
+    <p class="college-location">Kalaburgi, Karnataka </p>
+
+    <div class="portal-title">Unit Test & Monthly Test Results</div>
+  </div>
+
   <div class="container">
-    <h1>Check Your Subject Result</h1>
+    <h2 class="search-title">Check Your Test Results</h2>
 
-    <select id="year">
-      <option value="">Select Year</option>
-      <option value="1">1st Year</option>
-      <option value="2">2nd Year</option>
-    </select><br>
+    <form onsubmit="event.preventDefault(); getResult();">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="year">Academic Year</label>
+          <select id="year" required>
+            <option value="">Select Year</option>
+            <option value="1">1st Year PUC</option>
+            <option value="2">2nd Year PUC</option>
+          </select>
+        </div>
 
-    <select id="subject">
-      <option value="">Select Subject</option>
-      <option value="Economics">Economics</option>
-      <option value="Business">Business</option>
-      <option value="Accountancy">Accountancy</option>
-      <option value="Computer">Computer Science</option>
-    </select><br>
+        <div class="form-group">
+          <label for="testType">Test Type</label>
+          <select id="testType" required>
+            <option value="">Select Test Type</option>
+            <option value="unit">Unit Test</option>
+            <option value="monthly">Monthly Test</option>
+          </select>
+        </div>
+      </div>
 
-    <input type="text" id="rollNumber" placeholder="Enter Roll Number"><br>
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <select id="subject" required>
+          <option value="">Select Subject</option>
+          <option value="Economics">Economics</option>
+          <option value="Business">Business Studies</option>
+          <option value="Accountancy">Accountancy</option>
+          <option value="Computer">Computer Science</option>
+          <option value="English">English</option>
+          <option value="Kannada">Kannada</option>
+        </select>
+      </div>
 
-    <button onclick="getResult()">Search Result</button>
+      <div class="form-group">
+        <label for="rollNumber">Roll Number</label>
+        <input type="text" id="rollNumber" placeholder="Enter your roll number" required>
+      </div>
 
-    <div class="loading-container" style="display:none; margin-top:10px;">Loading...</div>
-    <div id="result"></div>
+      <button type="submit" class="search-btn">Search Results</button>
+    </form>
+
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Fetching your results...</p>
+    </div>
+
+    <div id="result" class="result-card">
+      <!-- Results will be displayed here -->
+    </div>
+
+    <div id="error" class="error-message">
+      <!-- Error messages will be displayed here -->
+    </div>
   </div>
 
   <script>
     const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
     const apiKey = 'AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk';
 
+    function getGradeClass(grade) {
+      if (!grade) return '';
+      const g = grade.toUpperCase();
+      if (g.includes('A')) return 'grade-a';
+      if (g.includes('B')) return 'grade-b';
+      if (g.includes('C')) return 'grade-c';
+      return 'grade-f';
+    }
+
+    function getTestTypeClass(testType) {
+      return testType === 'unit' ? 'unit-test' : 'monthly-test';
+    }
+
+    function getTestTypeName(testType) {
+      return testType === 'unit' ? 'Unit Test' : 'Monthly Test';
+    }
+
     async function getResult() {
       const year = document.getElementById("year").value;
       const subject = document.getElementById("subject").value;
+      const testType = document.getElementById("testType").value;
       const roll = document.getElementById("rollNumber").value.trim();
+      
       const resultDiv = document.getElementById("result");
+      const errorDiv = document.getElementById("error");
       const loadingDiv = document.querySelector(".loading-container");
 
-      const sheetName = `${year}_${subject}`;
-
+      // Hide previous results
       resultDiv.style.display = "none";
+      errorDiv.style.display = "none";
       loadingDiv.style.display = "block";
 
-      if (!year || !subject || !roll) {
+      if (!year || !subject || !roll || !testType) {
         loadingDiv.style.display = "none";
-        resultDiv.innerHTML = "<p>Please select year, subject, and enter your roll number.</p>";
-        resultDiv.style.display = "block";
+        errorDiv.innerHTML = "Please fill in all required fields.";
+        errorDiv.style.display = "block";
         return;
       }
 
+      const sheetName = `${year}_${subject}_${testType}`;
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
 
       try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Simulate loading time
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         const response = await fetch(url);
         const data = await response.json();
 
-        if (!data.values) throw new Error("No data found");
+        if (!data.values) {
+          throw new Error("No data found for the selected criteria");
+        }
 
         const rows = data.values;
         const headers = rows[0];
 
-        const rollIndex = headers.indexOf("ROLL_NO");
-        const nameIndex = headers.indexOf("Student Name");
-        const fatherIndex = headers.indexOf("Father Name");
-        const marksIndex = headers.indexOf("MARKS");
-        const gradeIndex = headers.indexOf("GRADE");
+        const rollIndex = headers.findIndex(h => h.toLowerCase().includes("roll"));
+        const nameIndex = headers.findIndex(h => h.toLowerCase().includes("name") && !h.toLowerCase().includes("father"));
+        const fatherIndex = headers.findIndex(h => h.toLowerCase().includes("father"));
+        const marksIndex = headers.findIndex(h => h.toLowerCase().includes("marks"));
+        const gradeIndex = headers.findIndex(h => h.toLowerCase().includes("grade"));
 
         const student = rows.find((row, i) => i > 0 && row[rollIndex] === roll);
 
         loadingDiv.style.display = "none";
 
         if (student) {
+          const testTypeName = getTestTypeName(testType);
+          const testTypeClass = getTestTypeClass(testType);
+          const gradeClass = getGradeClass(student[gradeIndex]);
+
           resultDiv.innerHTML = `
-            <div class="result-card">
-              <h3>Name: ${student[nameIndex]}</h3>
-              <p>Father Name: ${student[fatherIndex]}</p>
-              <p>Subject: ${subject}</p>
-              <p>Marks: ${student[marksIndex]}</p>
-              <p>Grade: ${student[gradeIndex]}</p>
-            </div>`;
+            <div class="test-type-indicator">
+              <span class="test-badge ${testTypeClass}">${testTypeName} Result</span>
+            </div>
+            
+            <div class="student-info">
+              <div class="info-item">
+                <div class="info-label">Student Name</div>
+                <div class="info-value">${student[nameIndex] || 'Not Available'}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Father's Name</div>
+                <div class="info-value">${student[fatherIndex] || 'Not Available'}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Roll Number</div>
+                <div class="info-value">${roll}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Subject</div>
+                <div class="info-value">${subject}</div>
+              </div>
+            </div>
+
+            <div class="marks-section">
+              <div class="info-label">Marks Obtained</div>
+              <div class="marks-display">${student[marksIndex] || 'N/A'}</div>
+              <div class="grade-display ${gradeClass}">${student[gradeIndex] || 'Not Graded'}</div>
+            </div>
+          `;
+          resultDiv.style.display = "block";
         } else {
-          resultDiv.innerHTML = `<p>No result found for Roll Number: ${roll}</p>`;
+          errorDiv.innerHTML = `No result found for Roll Number: <strong>${roll}</strong> in ${subject} ${getTestTypeName(testType)}. Please check your roll number and try again.`;
+          errorDiv.style.display = "block";
         }
 
-        resultDiv.style.display = "block";
-
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching data:', err);
         loadingDiv.style.display = "none";
-        resultDiv.innerHTML = "<p>Error fetching data.</p>";
-        resultDiv.style.display = "block";
+        errorDiv.innerHTML = "Unable to fetch results at the moment. Please try again later or contact the college office.";
+        errorDiv.style.display = "block";
       }
     }
+
+    // Add some interactive feedback
+    document.addEventListener('DOMContentLoaded', function() {
+      const inputs = document.querySelectorAll('input, select');
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+          this.parentElement.style.transform = 'translateY(0)';
+        });
+      });
+    });
   </script>
 </body>
 </html>
-
