@@ -5,72 +5,167 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Student Subject Result</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
- .college-logo {
-      width: 100px;
-      height: 100px;
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #d8eefe, #e0f7fa);
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #0f172a;
+      background: linear-gradient(to right, #ffe4e6, #3b82f6);
+      padding: 25px 10px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      color: white;
+    }
+
+    .college-logo {
+      width: 120px;
+      height: 120px;
       margin: 0 auto 15px;
+      background: white;
+      border-radius: 50%;
+      padding: 10px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: white;
+      transition: transform 0.3s;
+    }
+
+    .college-logo:hover {
+      transform: scale(1.05);
+    }
+
+    .college-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       border-radius: 50%;
-      padding: 5px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     }
-.header {
-      text-align: center;
-      margin-bottom: 30px;
-      color: white;
+
+    .header h1 {
+      margin: 10px 0 5px;
+      font-size: 24px;
     }
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to right, #dbeafe, #f0f9ff);
-      padding: 30px;
+
+    .header h3 {
+      margin: 0;
+      font-weight: 500;
+      font-size: 18px;
+      opacity: 0.95;
     }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: white;
-      padding: 20px;
+
+    .college-location {
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .portal-title {
+      background-color: #facc15;
+      color: #1e293b;
+      font-weight: 600;
+      padding: 8px;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      text-align: center;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      margin-top: 10px;
     }
+
+    .container {
+  max-width: 500px;
+  margin: 30px auto;
+  background: #fef9c3; /* Light Yellow */
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+
     h1 {
-      color: #1d4ed8;
+      color: #1e3a8a;
+      font-size: 20px;
+      margin-bottom: 25px;
     }
+
     select, input, button {
       margin: 10px 0;
-      padding: 12px;
-      font-size: 16px;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 14px 16px;
+      font-size: 15px;
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      transition: 0.3s ease;
     }
+
+    select:focus, input:focus {
+      border-color: #3b82f6;
+      outline: none;
+      box-shadow: 0 0 5px #93c5fd;
+    }
+
     button {
-      background-color: #1d4ed8;
+      background-color: #2563eb;
       color: white;
+      font-weight: 600;
+      border: none;
       cursor: pointer;
     }
+
+    button:hover {
+      background-color: #1d4ed8;
+    }
+
+    .loading-container {
+      display: none;
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #1d4ed8;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
     .result-card {
-      margin-top: 20px;
+      margin-top: 25px;
       background-color: #e0f2fe;
-      padding: 15px;
-      border-radius: 10px;
+      padding: 20px;
+      border-radius: 16px;
       text-align: left;
+      color: #1e3a8a;
+      font-size: 16px;
+      line-height: 1.6;
+      border-left: 6px solid #2563eb;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
   </style>
 </head>
 <body>
- <div class="header">
-    
-    <h1 class="college-name">Millennium Composite Pre University College</h1>
-    <p class="college-location">Kalaburgi, Karnataka </p>
-
-    <div class="portal-title">Unit Test & Monthly Test Results</div>
+  <div class="header">
+    <div class="college-logo">
+      <img src="logo.jpg" alt="College Logo">
+    </div>
+    <h3>Kalyana Karnataka Education Society</h3>
+    <h1>MILLENNIUM COMPOSITE PRE-UNIVERSITY COLLEGE</h1>
+    <p class="college-location">Kalaburgi, Karnataka</p>
+    <div class="portal-title">
+      <marquee scrollamount="6" behavior="scroll" direction="left">
+        Unit Test & Monthly Test Results
+      </marquee>
+    </div>
   </div>
+
   <div class="container">
     <h1>Check Your Subject Result</h1>
 
@@ -78,7 +173,7 @@
       <option value="">Select Year</option>
       <option value="1">1st Year</option>
       <option value="2">2nd Year</option>
-    </select><br>
+    </select>
 
     <select id="subject">
       <option value="">Select Subject</option>
@@ -86,13 +181,12 @@
       <option value="Business">Business</option>
       <option value="Accountancy">Accountancy</option>
       <option value="Computer">Computer Science</option>
-    </select><br>
+    </select>
 
-    <input type="text" id="rollNumber" placeholder="Enter Roll Number"><br>
-
+    <input type="text" id="rollNumber" placeholder="Enter Roll Number">
     <button onclick="getResult()">Search Result</button>
 
-    <div class="loading-container" style="display:none; margin-top:10px;">Loading...</div>
+    <div class="loading-container">Loading...</div>
     <div id="result"></div>
   </div>
 
@@ -108,7 +202,6 @@
       const loadingDiv = document.querySelector(".loading-container");
 
       const sheetName = `${year}_${subject}`;
-
       resultDiv.style.display = "none";
       loadingDiv.style.display = "block";
 
@@ -166,4 +259,3 @@
   </script>
 </body>
 </html>
-
