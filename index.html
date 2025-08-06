@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Subject Result</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Student Subject Result
+  </title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
   <style>
-    body {
+   body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(to right, #d8eefe, #e0f7fa);
@@ -149,52 +151,94 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
   </style>
-</head>
-<body>
+ </head>
+ <body>
   <div class="header">
-    <div class="college-logo">
-  <img src="https://raw.githubusercontent.com/Siddaram76/student_result_website/main/logo.jpg" alt="College Logo">
-</div>
-       <h3>Kalyana Karnataka Education Society</h3>
-    <h1>MILLENNIUM COMPOSITE PRE-UNIVERSITY COLLEGE</h1>
-    <p class="college-location">Kalaburgi, Karnataka</p>
-    <div class="portal-title">
-      <marquee scrollamount="6" behavior="scroll" direction="left">
-        Unit Test & Monthly Test Results
-      </marquee>
-    </div>
+   <div class="college-logo">
+    <img alt="College Logo" src="https://raw.githubusercontent.com/Siddaram76/student_result_website/main/logo.jpg"/>
+   </div>
+   <h3>
+    Kalyana Karnataka Education Society
+   </h3>
+   <h1>
+    MILLENNIUM COMPOSITE PRE-UNIVERSITY COLLEGE
+   </h1>
+   <p class="college-location">
+    Kalaburgi, Karnataka
+   </p>
+   <div class="portal-title">
+    <marquee behavior="scroll" direction="left" scrollamount="6">
+     Unit Test &amp; Monthly Test Results
+    </marquee>
+   </div>
   </div>
-
   <div class="container">
-    <h1>Check Your Subject Result</h1>
-
-    <select id="year">
-      <option value="">Select Year</option>
-      <option value="1">1st Year</option>
-      <option value="2">2nd Year</option>
-    </select>
-
-    <select id="subject">
-      <option value="">Select Subject</option>
-      <option value="Economics">Economics</option>
-      <option value="Business">Business</option>
-      <option value="Accountancy">Accountancy</option>
-      <option value="Computer">Computer Science</option>
-      <option value="Physics">Physics</option>
-     <option value="Chemistry">Chemistry</option>
-    <option value="Maths">Maths</option>
-    <option value="Biology">Biology</option>
-    </select>
-
-    <input type="text" id="rollNumber" placeholder="Enter Roll Number">
-    <button onclick="getResult()">Search Result</button>
-
-    <div class="loading-container">Loading...</div>
-    <div id="result"></div>
+   <h1>
+    Check Your Subject Result
+   </h1>
+   <select id="year">
+    <option value="">
+     Select Year
+    </option>
+    <option value="1">
+     1st Year
+    </option>
+    <option value="2">
+     2nd Year
+    </option>
+   </select>
+   <select id="subject">
+    <option value="">
+     Select Subject
+    </option>
+    <option value="Economics">
+     Economics
+    </option>
+    <option value="Business">
+     Business
+    </option>
+    <option value="Accountancy">
+     Accountancy
+    </option>
+    <option value="Computer">
+     Computer Science
+    </option>
+    <option value="Physics">
+     Physics
+    </option>
+    <option value="Chemistry">
+     Chemistry
+    </option>
+    <option value="Maths">
+     Maths
+    </option>
+    <option value="Biology">
+     Biology
+    </option>
+   </select>
+   <select id="testType">
+    <option value="">
+     Select Test Type
+    </option>
+    <option value="Unit">
+     Unit Test
+    </option>
+    <option value="Monthly">
+     Monthly Test
+    </option>
+   </select>
+   <input id="rollNumber" placeholder="Enter Roll Number" type="text"/>
+   <button onclick="getResult()">
+    Search Result
+   </button>
+   <div class="loading-container">
+    Loading...
+   </div>
+   <div id="result">
+   </div>
   </div>
-
   <script>
-    const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
+   const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
     const apiKey = 'AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk';
 
     async function getResult() {
@@ -204,11 +248,12 @@
       const resultDiv = document.getElementById("result");
       const loadingDiv = document.querySelector(".loading-container");
 
-      const sheetName = `${year}_${subject}`;
+      const testType = document.getElementById("testType").value;
+      const sheetName = `${year}_${subject}_${testType}`;
       resultDiv.style.display = "none";
       loadingDiv.style.display = "block";
 
-      if (!year || !subject || !roll) {
+      if (!year || !subject || !testType || !roll) {
         loadingDiv.style.display = "none";
         resultDiv.innerHTML = "<p>Please select year, subject, and enter your roll number.</p>";
         resultDiv.style.display = "block";
@@ -226,26 +271,31 @@
 
         const rows = data.values;
         const headers = rows[0];
-
+	
         const rollIndex = headers.indexOf("ROLL_NO");
         const nameIndex = headers.indexOf("Student Name");
         const fatherIndex = headers.indexOf("Father Name");
+        const chapterIndex = headers.indexOf("CHAPTER");
         const marksIndex = headers.indexOf("MARKS");
         const gradeIndex = headers.indexOf("GRADE");
 
         const student = rows.find((row, i) => i > 0 && row[rollIndex] === roll);
 
         loadingDiv.style.display = "none";
+const chapterInfo = (testType === "Unit" && chapterIndex !== -1 && student[chapterIndex])
+  ? `<p>Chapter: ${student[chapterIndex]}</p>` : "";
 
         if (student) {
-          resultDiv.innerHTML = `
-            <div class="result-card">
-              <h3>Name: ${student[nameIndex]}</h3>
-              <p>Father Name: ${student[fatherIndex]}</p>
-              <p>Subject: ${subject}</p>
-              <p>Marks: ${student[marksIndex]}</p>
-              <p>Grade: ${student[gradeIndex]}</p>
-            </div>`;
+         resultDiv.innerHTML = `
+  <div class="result-card">
+    <h3>Name: ${student[nameIndex]}</h3>
+    <p>Father Name: ${student[fatherIndex]}</p>
+    <p>Subject: ${subject}</p>
+    <p>Test Type: ${testType}</p>
+    ${chapterInfo}
+    <p>Marks: ${student[marksIndex]}</p>
+    <p>Grade: ${student[gradeIndex]}</p>
+  </div>`;
         } else {
           resultDiv.innerHTML = `<p>No result found for Roll Number: ${roll}</p>`;
         }
@@ -260,17 +310,13 @@
       }
     }
   </script>
-<footer style="text-align:center; margin-top:40px; color:#334155; font-size:14px;">
-  <hr style="margin-bottom: 10px;">
-  <p><strong>Developed and Maintained by Siddaram Diggikar, Dept. of Computer science</strong></p>
-</footer>
-
-</body>
+  <footer style="text-align:center; margin-top:40px; color:#334155; font-size:14px;">
+   <hr style="margin-bottom: 10px;"/>
+   <p>
+    <strong>
+     Developed and Maintained by Siddaram Diggikar, Dept. of Computer science
+    </strong>
+   </p>
+  </footer>
+ </body>
 </html>
-
-
-
-
-
-
-
