@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
  <head>
@@ -150,6 +151,19 @@
       border-left: 6px solid #2563eb;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
+  
+
+/* Animation and table styles added for better UX */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.result-card { animation: fadeSlideIn 0.6s ease; }
+.result-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.result-table th { background-color: #2563eb; color: #fff; padding: 8px; border: 1px solid #cbd5e1; text-align:left; }
+.result-table td { padding: 8px; border: 1px solid #e6eef8; }
+.result-table tr:nth-child(even) { background-color: #f1f5f9; }
+.notice { background-color: #fef3c7; border-left: 5px solid #f59e0b; padding: 10px; margin: 10px 0; color: #78350f; border-radius:6px;}
   </style>
  </head>
  <body>
@@ -171,6 +185,20 @@
      Unit Test &amp; Monthly Test Results
     </marquee>
    </div>
+  </div>
+  <div style="background-color: #fef3c7; border-left: 5px solid #f59e0b; padding: 10px; margin: 10px 0; color: #78350f; font-weight: bold;">
+   📢 Latest Notification:
+   <ul style="margin: 5px 0; padding-left: 20px;">
+    <li>
+     Unit Test 1 Results are now available.
+    </li>
+    <li>
+     Monthly Test scheduled for 25th August.
+    </li>
+    <li>
+     Notes for Economics uploaded in the Notes section.
+    </li>
+   </ul>
   </div>
   <div class="container">
    <h1>
@@ -239,76 +267,151 @@
   </div>
   <script>
    const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
-    const apiKey = 'AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk';
+const apiKey = 'AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk';
 
-    async function getResult() {
-      const year = document.getElementById("year").value;
-      const subject = document.getElementById("subject").value;
-      const roll = document.getElementById("rollNumber").value.trim();
-      const resultDiv = document.getElementById("result");
-      const loadingDiv = document.querySelector(".loading-container");
+function findHeaderIndex(headers, pattern) {
+  pattern = pattern.toLowerCase();
+  for (let i = 0; i < headers.length; i++) {
+    const h = (headers[i] || '').toString().toLowerCase();
+    if (h === pattern || h.includes(pattern) || (pattern === 'roll_no' && /roll/.test(h))) return i;
+  }
+  return -1;
+}
 
-      const testType = document.getElementById("testType").value;
-      const sheetName = `${year}_${subject}_${testType}`;
-      resultDiv.style.display = "none";
-      loadingDiv.style.display = "block";
+async function getResult() {
+  const year = document.getElementById("year").value;
+  const subject = document.getElementById("subject").value;
+  const roll = document.getElementById("rollNumber").value.trim();
+  const resultDiv = document.getElementById("result");
+  const loadingDiv = document.querySelector(".loading-container");
+  const testType = document.getElementById("testType").value;
+  const sheetName = `${year}_${subject}_${testType}`;
 
-      if (!year || !subject || !testType || !roll) {
-        loadingDiv.style.display = "none";
-        resultDiv.innerHTML = "<p>Please select year, subject, and enter your roll number.</p>";
-        resultDiv.style.display = "block";
-        return;
-      }
+  resultDiv.style.display = "none";
+  loadingDiv.style.display = "block";
+  resultDiv.innerHTML = "";
 
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+  if (!year || !subject || !testType || !roll) {
+    loadingDiv.style.display = "none";
+    resultDiv.innerHTML = "<p>Please select year, subject, test type, and enter your roll number.</p>";
+    resultDiv.style.display = "block";
+    return;
+  }
 
-      try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const response = await fetch(url);
-        const data = await response.json();
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(sheetName)}?key=${apiKey}`;
 
-        if (!data.values) throw new Error("No data found");
-
-        const rows = data.values;
-        const headers = rows[0];
-	
-        const rollIndex = headers.indexOf("ROLL_NO");
-        const nameIndex = headers.indexOf("Student Name");
-        const fatherIndex = headers.indexOf("Father Name");
-        const chapterIndex = headers.indexOf("CHAPTER");
-        const marksIndex = headers.indexOf("MARKS");
-        const gradeIndex = headers.indexOf("GRADE");
-
-        const student = rows.find((row, i) => i > 0 && row[rollIndex] === roll);
-
-        loadingDiv.style.display = "none";
-const chapterInfo = (testType === "Unit" && chapterIndex !== -1 && student[chapterIndex])
-  ? `<p>Chapter: ${student[chapterIndex]}</p>` : "";
-
-        if (student) {
-         resultDiv.innerHTML = `
-  <div class="result-card">
-    <h3>Name: ${student[nameIndex]}</h3>
-    <p>Father Name: ${student[fatherIndex]}</p>
-    <p>Subject: ${subject}</p>
-    <p>Test Type: ${testType}</p>
-    ${chapterInfo}
-    <p>Marks: ${student[marksIndex]}</p>
-    <p>Grade: ${student[gradeIndex]}</p>
-  </div>`;
-        } else {
-          resultDiv.innerHTML = `<p>No result found for Roll Number: ${roll}</p>`;
-        }
-
-        resultDiv.style.display = "block";
-
-      } catch (err) {
-        console.error(err);
-        loadingDiv.style.display = "none";
-        resultDiv.innerHTML = "<p>Error fetching data.</p>";
-        resultDiv.style.display = "block";
-      }
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Network response was not OK: ' + response.status);
     }
+    const data = await response.json();
+
+    if (!data.values || data.values.length < 2) {
+      throw new Error("No data found in the sheet. Make sure the sheet/tab exists and is public.");
+    }
+
+    const rows = data.values;
+    const headers = rows[0].map(h => (h||'').toString().trim());
+    // find common columns
+    const rollIndex = findHeaderIndex(headers, 'roll');
+    const nameIndex = findHeaderIndex(headers, 'student name') !== -1 ? findHeaderIndex(headers, 'student name') : findHeaderIndex(headers, 'name');
+    const fatherIndex = findHeaderIndex(headers, 'father');
+
+    if (rollIndex === -1 || nameIndex === -1) {
+      loadingDiv.style.display = "none";
+      resultDiv.innerHTML = "<p>Sheet headers are missing required columns (ROLL_NO and Student Name). Please check the sheet.</p>";
+      resultDiv.style.display = "block";
+      return;
+    }
+
+    const student = rows.find((r, i) => i > 0 && ( (r[rollIndex]||'').toString().trim() === roll ) );
+
+    loadingDiv.style.display = "none";
+
+    if (!student) {
+      resultDiv.innerHTML = `<p>No result found for Roll Number: ${roll}</p>`;
+      resultDiv.style.display = "block";
+      return;
+    }
+
+    // Monthly Test handling (dynamic subject headers)
+    if (testType.toLowerCase() === 'monthly') {
+      // find indices for total, percentage, grade (case-insensitive)
+      const totalIndex = headers.findIndex(h => /total/i.test(h));
+      const percIndex = headers.findIndex(h => /perc/i.test(h));
+      const gradeIndex = headers.findIndex(h => /grade/i.test(h));
+
+      // determine subject columns as those between fatherIndex+1 and before totalIndex (if total exists),
+      // otherwise treat middle columns (exclude roll,name,father,grade,percentage,total)
+      let excluded = new Set([rollIndex, nameIndex, fatherIndex, totalIndex, percIndex, gradeIndex].filter(i => i >= 0));
+      let subjectCols = [];
+      for (let i = 0; i < headers.length; i++) {
+        if (!excluded.has(i)) subjectCols.push(i);
+      }
+
+      // If there are more than 6, take the first 6 (as user said number fixed)
+      if (subjectCols.length > 6) subjectCols = subjectCols.slice(0, 6);
+
+      // Build table rows
+      let tableRows = subjectCols.map(i => {
+        const subjName = headers[i] || ('Subject ' + (i+1));
+        const mark = student[i] !== undefined ? student[i] : '';
+        return `<tr><td>${subjName}</td><td>${mark}</td></tr>`;
+      }).join('');
+
+      const totalVal = (totalIndex >= 0 ? student[totalIndex] : '');
+      const percVal = (percIndex >= 0 ? student[percIndex] : '');
+      const gradeVal = (gradeIndex >= 0 ? student[gradeIndex] : '');
+
+      resultDiv.innerHTML = `
+        <div class="result-card">
+          <h3>Name: ${student[nameIndex] || ''}</h3>
+          <p>Father Name: ${student[fatherIndex] || ''}</p>
+          <p>Test Type: Monthly Test</p>
+          <table class="result-table" role="table" aria-label="Monthly marks">
+            <thead><tr><th>Subject</th><th>Marks</th></tr></thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+          <p><strong>Total:</strong> ${totalVal}</p>
+          <p><strong>Percentage:</strong> ${percVal}</p>
+          <p><strong>Grade:</strong> ${gradeVal}</p>
+        </div>
+      `;
+      resultDiv.style.display = "block";
+      return;
+    }
+
+    // Unit Test handling
+    // find chapter, marks, grade indices
+    const chapterIndex = headers.findIndex(h => /chapter/i.test(h));
+    const marksIndex = headers.findIndex(h => /mark/i.test(h));
+    const gradeIndex = headers.findIndex(h => /grade/i.test(h));
+
+    const chapterInfo = (chapterIndex !== -1 && student[chapterIndex]) ? `<p>Chapter: ${student[chapterIndex]}</p>` : "";
+
+    resultDiv.innerHTML = `
+      <div class="result-card">
+        <h3>Name: ${student[nameIndex] || ''}</h3>
+        <p>Father Name: ${student[fatherIndex] || ''}</p>
+        <p>Subject: ${subject}</p>
+        <p>Test Type: Unit Test</p>
+        ${chapterInfo}
+        <p>Marks: ${marksIndex >= 0 ? student[marksIndex] : ''}</p>
+        <p>Grade: ${gradeIndex >= 0 ? student[gradeIndex] : ''}</p>
+      </div>
+    `;
+    resultDiv.style.display = "block";
+
+  } catch (err) {
+    loadingDiv.style.display = "none";
+    console.error(err);
+    resultDiv.innerHTML = `<p>Error: ${err.message}</p>`;
+    resultDiv.style.display = "block";
+  }
+}
   </script>
   <footer style="text-align:center; margin-top:40px; color:#334155; font-size:14px;">
    <hr style="margin-bottom: 10px;"/>
