@@ -6,13 +6,14 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <title>Student Subject Result</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
   <style>
-    /* Same styles as before */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(to right, #d8eefe, #e0f7fa);
       padding: 20px;
+      color: #334155;
     }
     .header {
       text-align: center;
@@ -20,8 +21,9 @@
       background: linear-gradient(to right, #ffe4e6, #3b82f6);
       padding: 25px 10px;
       border-radius: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
       color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .college-logo {
       width: 120px;
@@ -30,7 +32,7 @@
       background: white;
       border-radius: 50%;
       padding: 10px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -43,7 +45,7 @@
       object-fit: cover;
       border-radius: 50%;
     }
-    .header h1 { margin: 10px 0 5px; font-size: 24px; }
+    .header h1 { margin: 10px 0 5px; font-size: 24px; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
     .header h3 { margin: 0; font-weight: 500; font-size: 18px; opacity: 0.95; }
     .college-location { font-size: 15px; margin-bottom: 8px; }
     .portal-title {
@@ -53,10 +55,22 @@
       padding: 8px;
       border-radius: 12px;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-      margin-top: 10px;
+      margin-top: 15px;
     }
+    .notification-bar {
+      max-width: 800px;
+      margin: 0 auto 30px;
+      background-color: #fef3c7;
+      border-left: 5px solid #f59e0b;
+      padding: 15px 20px;
+      color: #78350f;
+      font-weight: bold;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .notification-bar ul { margin: 8px 0 0; padding-left: 20px; }
     .container {
-      max-width: 500px;
+      max-width: 550px;
       margin: 30px auto;
       background: #fef9c3;
       padding: 30px;
@@ -64,39 +78,70 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       text-align: center;
     }
-    select, input, button {
-      margin: 10px 0;
+    .container h1 {
+        margin-bottom: 25px;
+        color: #4a5568;
+    }
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    select, input {
+      width: 100%;
       padding: 14px 16px;
       font-size: 15px;
       border-radius: 12px;
       border: 1px solid #cbd5e1;
       transition: 0.3s ease;
+      box-sizing: border-box;
     }
     select:focus, input:focus {
       border-color: #3b82f6;
       outline: none;
       box-shadow: 0 0 5px #93c5fd;
     }
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
     button {
-      background-color: #2563eb;
-      color: white;
+      flex: 1;
+      padding: 14px 16px;
+      font-size: 16px;
+      border-radius: 12px;
       font-weight: 600;
       border: none;
       cursor: pointer;
+      transition: 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    button:hover { background-color: #1d4ed8; }
+    .submit-btn {
+      background-color: #2563eb;
+      color: white;
+    }
+    .submit-btn:hover { background-color: #1d4ed8; }
+    .clear-btn {
+      background-color: #ef4444;
+      color: white;
+    }
+    .clear-btn:hover { background-color: #dc2626; }
     .loading-container {
       display: none;
-      margin-top: 15px;
+      margin-top: 20px;
       font-size: 16px;
       font-weight: bold;
       color: #1d4ed8;
-      animation: pulse 1s infinite;
+      animation: pulse 1.5s infinite;
     }
     @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.4; }
-      100% { opacity: 1; }
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.05); }
+      100% { opacity: 1; transform: scale(1); }
     }
     .result-card {
       margin-top: 25px;
@@ -105,32 +150,15 @@
       border-radius: 16px;
       text-align: left;
       color: #1e3a8a;
-      font-size: 16px;
       line-height: 1.6;
       border-left: 6px solid #2563eb;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     .result-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    .result-table th { background-color: #2563eb; color: #fff; padding: 8px; border: 1px solid #cbd5e1; text-align:left; }
-    .result-table td { padding: 8px; border: 1px solid #e6eef8; }
+    .result-table th { background-color: #bee3f8; color: #2a4365; padding: 10px; border: 1px solid #a4cafe; text-align:left; font-weight: 600; }
+    .result-table td { padding: 10px; border: 1px solid #e6eef8; }
     .result-table tr:nth-child(even) { background-color: #f1f5f9; }
-    .input-group {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .input-group input {
-      flex: 1;
-    }
-    .clear-btn {
-      background-color: #ef4444;
-      padding: 0 12px;
-      font-size: 14px;
-      border-radius: 8px;
-    }
-    .clear-btn:hover {
-      background-color: #dc2626;
-    }
+    footer { text-align:center; margin-top:40px; color:#334155; font-size:14px; }
   </style>
 </head>
 <body>
@@ -140,7 +168,7 @@
     </div>
     <h3>Kalyana Karnataka Education Society</h3>
     <h1>MILLENNIUM COMPOSITE PRE-UNIVERSITY COLLEGE</h1>
-    <p class="college-location">Kalaburgi, Karnataka</p>
+    <p class="college-location"><i class="fas fa-map-marker-alt"></i> Kalaburgi, Karnataka</p>
     <div class="portal-title">
       <marquee behavior="scroll" direction="left" scrollamount="6">
         Unit Test &amp; Monthly Test Results
@@ -148,132 +176,181 @@
     </div>
   </div>
 
-  <div style="background-color: #fef3c7; border-left: 5px solid #f59e0b; padding: 10px; margin: 10px 0; color: #78350f; font-weight: bold;">
-    📢 Latest Notification:
-    <ul style="margin: 5px 0; padding-left: 20px;">
+  <div class="notification-bar">
+    <i class="fas fa-bell"></i> <strong>Latest Notifications:</strong>
+    <ul>
       <li>Unit Test Results are now available.</li>
       <li>I Govt. Test scheduled for 18th August.</li>
       <li>Other subject Unit Test Results are available soon Stay Tuned....!!</li>
     </ul>
   </div>
+
   <div class="container">
-    <h1>Student Results</h1>
-    <select id="year" onchange="updateCourses()">
-  <option value="">Select Year</option>
-  <option value="1">1st Year</option>
-  <option value="2">2nd Year</option>
-</select>
-
-<select id="course">
-  <option value="">Select Course</option>
-</select>
-
-    <select id="testType" onchange="toggleSubject()">
-      <option value="">Select Test Type</option>
-      <option value="Monthly">Monthly Test</option>
-      <option value="Unit">Unit Test</option>
-    </select>
-    <select id="subject" style="display:none;"></select>
-    <input type="text" id="rollNumber" placeholder="Enter Roll Number" />
-    <button onclick="getResult()">Get Result</button>
+    <h1><i class="fas fa-clipboard-check"></i> Student Results</h1>
+    <div class="form-grid">
+      <select id="year">
+        <option value="">Select Year</option>
+        <option value="1">1st Year</option>
+        <option value="2">2nd Year</option>
+      </select>
+      <select id="course">
+        <option value="">Select Course</option>
+      </select>
+      <select id="testType">
+        <option value="">Select Test Type</option>
+        <option value="Monthly">Monthly Test</option>
+        <option value="Unit">Unit Test</option>
+      </select>
+      <select id="subject" style="display:none;">
+        <option value="">Select Subject</option>
+      </select>
+      <input type="text" id="rollNumber" placeholder="Enter Roll Number" />
+    </div>
+    <div class="button-group">
+        <button class="submit-btn"><i class="fas fa-search"></i> Get Result</button>
+        <button class="clear-btn"><i class="fas fa-times"></i> Clear</button>
+    </div>
+    <div id="loading" class="loading-container">
+        <p>Searching for your result...</p>
+    </div>
     <div id="results"></div>
   </div>
 
-  <script>
-    const sheetId = "1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c";
-    const apiKey = "AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk";
-
-    function toggleSubject() {
-      const testType = document.getElementById("testType").value;
-      const course = document.getElementById("course").value;
-      const subjectSelect = document.getElementById("subject");
-      subjectSelect.innerHTML = "";
-      if (testType === "Unit") {
-        subjectSelect.style.display = "block";
-        if (course.includes("Science")) {
-          subjectSelect.innerHTML = `<option value="PCMB">PCMB</option><option value="ComputerScience">Computer Science</option>`;
-        } else if (course.includes("Commerce")) {
-          subjectSelect.innerHTML = `<option value="Accountancy">Accountancy</option><option value="BusinessStudies">Business Studies</option>`;
-        }
-      } else {
-        subjectSelect.style.display = "none";
-      }
-    }
-
-    function getSheetName(year, course, testType, subject) {
-      if (testType === "Monthly") {
-        if (year === "1" && course === "Science1") return "1_Monthly_Science1";
-        if (year === "2" && course === "Science2") return "2_Monthly_Science2";
-        if (year === "1" && course === "Commerce1") return "1_Monthly_Commerce1";
-        if (year === "2" && course === "Commerce2") return "2_Monthly_Commerce2";
-      }
-      if (testType === "Unit") {
-        if (year === "1" && course === "Science1" && subject === "PCMB") return "1_PCMB_Unit";
-        if (year === "2" && course === "Science2" && subject === "PCMB") return "2_PCMB_Unit";
-        if (year === "1" && course === "Science1" && subject === "ComputerScience") return "1_Computer_Unit";
-        if (year === "2" && course === "Science2" && subject === "ComputerScience") return "2_Computer_Unit";
-        if (year === "1" && course === "Commerce1" && subject === "Accountancy") return "1_Accountancy";
-        if (year === "2" && course === "Commerce2" && subject === "Accountancy") return "2_Accountancy";
-        if (year === "2" && course === "Commerce2" && subject === "BusinessStudies") return "2_Business";
-      }
-      return null;
-    }
-function updateCourses() {
-  const year = document.getElementById("year").value;
-  const courseSelect = document.getElementById("course");
-  courseSelect.innerHTML = "<option value=''>Select Course</option>";
-
-  if (year === "1") {
-    courseSelect.innerHTML += "<option value='Science1'>Science 1</option>";
-    courseSelect.innerHTML += "<option value='Commerce1'>Commerce 1</option>";
-  } else if (year === "2") {
-    courseSelect.innerHTML += "<option value='Science2'>Science 2</option>";
-    courseSelect.innerHTML += "<option value='Commerce2'>Commerce 2</option>";
-  }
-}
-
-
-    async function getResult() {
-      const year = document.getElementById("year").value;
-      const course = document.getElementById("course").value;
-      const testType = document.getElementById("testType").value;
-      const subject = document.getElementById("subject").value;
-      const rollNumber = document.getElementById("rollNumber").value.trim().toUpperCase();
-      
-      const sheetName = getSheetName(year, course, testType, subject);
-      if (!sheetName) {
-        document.getElementById("results").innerHTML = `<p style='color:red;'>Invalid selection or missing mapping.</p>`;
-        return;
-      }
-
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        if (!data.values) {
-          document.getElementById("results").innerHTML = `<p style='color:red;'>No data found.</p>`;
-          return;
-        }
-        const headers = data.values[0];
-        const rows = data.values.slice(1);
-        const student = rows.find(r => r[0] === rollNumber);
-        if (!student) {
-          document.getElementById("results").innerHTML = `<p style='color:red;'>No results found for Roll Number ${rollNumber}</p>`;
-          return;
-        }
-        let tableRows = "";
-        headers.forEach((h, i) => {
-          tableRows += `<tr><th>${h}</th><td>${student[i] || ''}</td></tr>`;
-        });
-        document.getElementById("results").innerHTML = `<div class='result-card'><table>${tableRows}</table></div>`;
-      } catch (err) {
-        document.getElementById("results").innerHTML = `<p style='color:red;'>Error fetching data: ${err}</p>`;
-      }
-    }
-  </script>
-<footer style="text-align:center; margin-top:40px; color:#334155; font-size:14px;">
-    <hr style="margin-bottom: 10px;"/>
+  <footer>
+    <hr style="margin-bottom: 10px; border-top: 1px solid #cbd5e1;"/>
     <p><strong>Developed and Maintained by Siddaram Diggikar, Dept. of Computer science</strong></p>
   </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sheetId = "1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c";
+      const apiKey = "AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk";
+
+      const yearSelect = document.getElementById("year");
+      const courseSelect = document.getElementById("course");
+      const testTypeSelect = document.getElementById("testType");
+      const subjectSelect = document.getElementById("subject");
+      const rollNumberInput = document.getElementById("rollNumber");
+      const resultsDiv = document.getElementById("results");
+      const loadingDiv = document.getElementById("loading");
+      const submitBtn = document.querySelector(".submit-btn");
+      const clearBtn = document.querySelector(".clear-btn");
+
+      function toggleSubject() {
+        const testType = testTypeSelect.value;
+        const course = courseSelect.value;
+        subjectSelect.innerHTML = "<option value=''>Select Subject</option>";
+        if (testType === "Unit") {
+          subjectSelect.style.display = "block";
+          if (course.includes("Science")) {
+            subjectSelect.innerHTML += `<option value="PCMB">PCMB</option><option value="ComputerScience">Computer Science</option>`;
+          } else if (course.includes("Commerce")) {
+            subjectSelect.innerHTML += `<option value="Accountancy">Accountancy</option><option value="ComputerScience">Computer Science</option><option value="BusinessStudies">Business Studies</option>`;
+          }
+        } else {
+          subjectSelect.style.display = "none";
+        }
+      }
+
+      function getSheetName(year, course, testType, subject) {
+        if (testType === "Monthly") {
+            if (year === "1" && course === "Science1") return "1_Monthly_Science1";
+            if (year === "2" && course === "Science2") return "2_Monthly_Science2";
+            if (year === "1" && course === "Commerce1") return "1_Monthly_Commerce1";
+            if (year === "2" && course === "Commerce2") return "2_Monthly_Commerce2";
+        }
+        if (testType === "Unit") {
+            if (year === "1" && course === "Science1" && subject === "PCMB") return "1_PCMB_Unit";
+            if (year === "2" && course === "Science2" && subject === "PCMB") return "2_PCMB_Unit";
+            if (year === "1" && course === "Science1" && subject === "ComputerScience") return "1_Computer_Unit";
+            if (year === "2" && course === "Science2" && subject === "ComputerScience") return "2_Computer_Unit";
+            if (year === "1" && course === "Commerce1" && subject === "Accountancy") return "1_Accountancy";
+            if (year === "2" && course === "Commerce2" && subject === "Accountancy") return "2_Accountancy";
+            if (year === "2" && course === "Commerce2" && subject === "BusinessStudies") return "2_Business";
+        }
+        return null;
+      }
+
+      function updateCourses() {
+        const year = yearSelect.value;
+        courseSelect.innerHTML = "<option value=''>Select Course</option>";
+        if (year === "1") {
+          courseSelect.innerHTML += "<option value='Science1'>Science 1</option>";
+          courseSelect.innerHTML += "<option value='Commerce1'>Commerce 1</option>";
+        } else if (year === "2") {
+          courseSelect.innerHTML += "<option value='Science2'>Science 2</option>";
+          courseSelect.innerHTML += "<option value='Commerce2'>Commerce 2</option>";
+        }
+        toggleSubject();
+      }
+
+      function clearForm() {
+          yearSelect.value = "";
+          courseSelect.innerHTML = "<option value=''>Select Course</option>";
+          testTypeSelect.value = "";
+          subjectSelect.style.display = "none";
+          subjectSelect.innerHTML = "<option value=''>Select Subject</option>";
+          rollNumberInput.value = "";
+          resultsDiv.innerHTML = "";
+          loadingDiv.style.display = "none";
+      }
+
+      async function getResult() {
+        const year = yearSelect.value;
+        const course = courseSelect.value;
+        const testType = testTypeSelect.value;
+        const subject = subjectSelect.value;
+        const rollNumber = rollNumberInput.value.trim().toUpperCase();
+        
+        resultsDiv.innerHTML = "";
+        loadingDiv.style.display = "block";
+
+        const sheetName = getSheetName(year, course, testType, subject);
+        if (!sheetName) {
+          resultsDiv.innerHTML = `<p style='color:red;'>Invalid selection. Please check all fields.</p>`;
+          loadingDiv.style.display = "none";
+          return;
+        }
+        if (!rollNumber) {
+          resultsDiv.innerHTML = `<p style='color:red;'>Please enter your roll number.</p>`;
+          loadingDiv.style.display = "none";
+          return;
+        }
+
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data.error) { throw new Error(data.error.message); }
+          if (!data.values || data.values.length < 2) {
+            resultsDiv.innerHTML = `<p style='color:red;'>No data found for the selected test.</p>`;
+            return;
+          }
+          const headers = data.values[0];
+          const rows = data.values.slice(1);
+          const student = rows.find(r => r[0] && r[0].toUpperCase() === rollNumber);
+          if (!student) {
+            resultsDiv.innerHTML = `<p style='color:red;'>No results found for Roll Number <strong>${rollNumber}</strong></p>`;
+            return;
+          }
+          let tableRows = "";
+          headers.forEach((h, i) => {
+            tableRows += `<tr><th>${h}</th><td>${student[i] || ''}</td></tr>`;
+          });
+          resultsDiv.innerHTML = `<div class='result-card'><table class="result-table">${tableRows}</table></div>`;
+        } catch (err) {
+          resultsDiv.innerHTML = `<p style='color:red;'>Error fetching data: ${err.message}. Please try again later.</p>`;
+        } finally {
+          loadingDiv.style.display = "none";
+        }
+      }
+
+      // Attach event listeners
+      yearSelect.addEventListener('change', updateCourses);
+      testTypeSelect.addEventListener('change', toggleSubject);
+      submitBtn.addEventListener('click', getResult);
+      clearBtn.addEventListener('click', clearForm);
+    });
+  </script>
 </body>
 </html>
