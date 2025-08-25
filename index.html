@@ -158,18 +158,16 @@
   </div>
   <div class="container">
     <h1>Student Results</h1>
-    <select id="year">
-      <option value="">Select Year</option>
-      <option value="1">1st Year</option>
-      <option value="2">2nd Year</option>
-    </select>
-    <select id="course">
-      <option value="">Select Course</option>
-      <option value="Science1">Science 1</option>
-      <option value="Science2">Science 2</option>
-      <option value="Commerce1">Commerce 1</option>
-      <option value="Commerce2">Commerce 2</option>
-    </select>
+    <select id="year" onchange="updateCourses()">
+  <option value="">Select Year</option>
+  <option value="1">1st Year</option>
+  <option value="2">2nd Year</option>
+</select>
+
+<select id="course">
+  <option value="">Select Course</option>
+</select>
+
     <select id="testType" onchange="toggleSubject()">
       <option value="">Select Test Type</option>
       <option value="Monthly">Monthly Test</option>
@@ -220,6 +218,20 @@
       }
       return null;
     }
+function updateCourses() {
+  const year = document.getElementById("year").value;
+  const courseSelect = document.getElementById("course");
+  courseSelect.innerHTML = "<option value=''>Select Course</option>";
+
+  if (year === "1") {
+    courseSelect.innerHTML += "<option value='Science1'>Science 1</option>";
+    courseSelect.innerHTML += "<option value='Commerce1'>Commerce 1</option>";
+  } else if (year === "2") {
+    courseSelect.innerHTML += "<option value='Science2'>Science 2</option>";
+    courseSelect.innerHTML += "<option value='Commerce2'>Commerce 2</option>";
+  }
+}
+
 
     async function getResult() {
       const year = document.getElementById("year").value;
