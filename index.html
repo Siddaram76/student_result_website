@@ -134,7 +134,7 @@
   </style>
 </head>
 <body>
-  <div class="header">
+<div class="header">
     <div class="college-logo">
       <img alt="College Logo" src="https://raw.githubusercontent.com/Siddaram76/student_result_website/main/logo.jpg"/>
     </div>
@@ -156,186 +156,112 @@
       <li>Other subject Unit Test Results are available soon Stay Tuned....!!</li>
     </ul>
   </div>
-
   <div class="container">
-    <h1>Check Your Subject Result</h1>
+    <h1>Student Results</h1>
     <select id="year">
       <option value="">Select Year</option>
       <option value="1">1st Year</option>
       <option value="2">2nd Year</option>
     </select>
-    <select id="subject">
-      <option value="">Select Subject</option>
-      <option value="Economics">Economics</option>
-      <option value="Business">Business</option>
-      <option value="Accountancy">Accountancy</option>
-      <option value="Computer">Computer Science</option>
-      <option value="Physics">Physics</option>
-      <option value="Chemistry">Chemistry</option>
-      <option value="Maths">Maths</option>
-      <option value="Biology">Biology</option>
+    <select id="course">
+      <option value="">Select Course</option>
+      <option value="Science1">Science 1</option>
+      <option value="Science2">Science 2</option>
+      <option value="Commerce1">Commerce 1</option>
+      <option value="Commerce2">Commerce 2</option>
     </select>
-    <select id="testType">
+    <select id="testType" onchange="toggleSubject()">
       <option value="">Select Test Type</option>
-      <option value="Unit">Unit Test</option>
       <option value="Monthly">Monthly Test</option>
+      <option value="Unit">Unit Test</option>
     </select>
-
-    <div class="input-group">
-      <input id="rollNumber" placeholder="Enter Roll Number" type="text"/>
-      <button class="clear-btn" onclick="clearRoll()">❌Reset</button>
-    </div>
-
-    <button onclick="getResult()">Search Result</button>
-    <div class="loading-container">Loading...</div>
-    <div id="result"></div>
+    <select id="subject" style="display:none;"></select>
+    <input type="text" id="rollNumber" placeholder="Enter Roll Number" />
+    <button onclick="getResult()">Get Result</button>
+    <div id="results"></div>
   </div>
 
   <script>
-    const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
-    const apiKey = 'AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk';
+    const sheetId = "1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c";
+    const apiKey = "AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk";
 
-    function clearRoll() {
-      document.getElementById("rollNumber").value = "";
-      document.getElementById("rollNumber").focus();
+    function toggleSubject() {
+      const testType = document.getElementById("testType").value;
+      const course = document.getElementById("course").value;
+      const subjectSelect = document.getElementById("subject");
+      subjectSelect.innerHTML = "";
+      if (testType === "Unit") {
+        subjectSelect.style.display = "block";
+        if (course.includes("Science")) {
+          subjectSelect.innerHTML = `<option value="PCMB">PCMB</option><option value="ComputerScience">Computer Science</option>`;
+        } else if (course.includes("Commerce")) {
+          subjectSelect.innerHTML = `<option value="Accountancy">Accountancy</option><option value="BusinessStudies">Business Studies</option>`;
+        }
+      } else {
+        subjectSelect.style.display = "none";
+      }
     }
 
-    function findHeaderIndex(headers, pattern) {
-      pattern = pattern.toLowerCase();
-      for (let i = 0; i < headers.length; i++) {
-        const h = (headers[i] || '').toString().toLowerCase();
-        if (h === pattern || h.includes(pattern) || (pattern === 'roll_no' && /roll/.test(h))) return i;
+    function getSheetName(year, course, testType, subject) {
+      if (testType === "Monthly") {
+        if (year === "1" && course === "Science1") return "1_Monthly_Science1";
+        if (year === "2" && course === "Science2") return "2_Monthly_Science2";
+        if (year === "1" && course === "Commerce1") return "1_Monthly_Commerce1";
+        if (year === "2" && course === "Commerce2") return "2_Monthly_Commerce2";
       }
-      return -1;
+      if (testType === "Unit") {
+        if (year === "1" && course === "Science1" && subject === "PCMB") return "1_PCMB_Unit";
+        if (year === "2" && course === "Science2" && subject === "PCMB") return "2_PCMB_Unit";
+        if (year === "1" && course === "Science1" && subject === "ComputerScience") return "1_Computer_Unit";
+        if (year === "2" && course === "Science2" && subject === "ComputerScience") return "2_Computer_Unit";
+        if (year === "1" && course === "Commerce1" && subject === "Accountancy") return "1_Accountancy";
+        if (year === "2" && course === "Commerce2" && subject === "Accountancy") return "2_Accountancy";
+        if (year === "2" && course === "Commerce2" && subject === "BusinessStudies") return "2_Business";
+      }
+      return null;
     }
 
     async function getResult() {
       const year = document.getElementById("year").value;
-      const subject = document.getElementById("subject").value;
-      const roll = document.getElementById("rollNumber").value.trim();
-      const resultDiv = document.getElementById("result");
-      const loadingDiv = document.querySelector(".loading-container");
+      const course = document.getElementById("course").value;
       const testType = document.getElementById("testType").value;
-      const sheetName = `${year}_${subject}_${testType}`;
-
-      resultDiv.style.display = "none";
-      loadingDiv.style.display = "block";
-      resultDiv.innerHTML = "";
-
-      if (!year || !subject || !testType || !roll) {
-        loadingDiv.style.display = "none";
-        resultDiv.innerHTML = "<p>Please select year, subject, test type, and enter your roll number.</p>";
-        resultDiv.style.display = "block";
+      const subject = document.getElementById("subject").value;
+      const rollNumber = document.getElementById("rollNumber").value.trim().toUpperCase();
+      
+      const sheetName = getSheetName(year, course, testType, subject);
+      if (!sheetName) {
+        document.getElementById("results").innerHTML = `<p style='color:red;'>Invalid selection or missing mapping.</p>`;
         return;
       }
 
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(sheetName)}?key=${apiKey}`;
-
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
       try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Network response was not OK: ' + response.status);
-
-        const data = await response.json();
-        if (!data.values || data.values.length < 2) {
-          throw new Error("No data found in the sheet. Make sure the sheet/tab exists and is public.");
-        }
-
-        const rows = data.values;
-        const headers = rows[0].map(h => (h||'').toString().trim());
-        const rollIndex = findHeaderIndex(headers, 'roll');
-        const nameIndex = findHeaderIndex(headers, 'student name') !== -1 ? findHeaderIndex(headers, 'student name') : findHeaderIndex(headers, 'name');
-        const fatherIndex = findHeaderIndex(headers, 'father');
-
-        if (rollIndex === -1 || nameIndex === -1) {
-          loadingDiv.style.display = "none";
-          resultDiv.innerHTML = "<p>Sheet headers are missing required columns (ROLL_NO and Student Name). Please check the sheet.</p>";
-          resultDiv.style.display = "block";
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data.values) {
+          document.getElementById("results").innerHTML = `<p style='color:red;'>No data found.</p>`;
           return;
         }
-
-        const student = rows.find((r, i) =>
-          i > 0 &&
-          (r[rollIndex] || '').toString().trim().toLowerCase() === roll.toLowerCase()
-        );
-
-        loadingDiv.style.display = "none";
-
+        const headers = data.values[0];
+        const rows = data.values.slice(1);
+        const student = rows.find(r => r[0] === rollNumber);
         if (!student) {
-          resultDiv.innerHTML = `<p>No result found for Roll Number: ${roll}</p>`;
-          resultDiv.style.display = "block";
+          document.getElementById("results").innerHTML = `<p style='color:red;'>No results found for Roll Number ${rollNumber}</p>`;
           return;
         }
-
-        if (testType.toLowerCase() === 'monthly') {
-          const totalIndex = headers.findIndex(h => /total/i.test(h));
-          const percIndex = headers.findIndex(h => /perc/i.test(h));
-          const gradeIndex = headers.findIndex(h => /grade/i.test(h));
-
-          let excluded = new Set([rollIndex, nameIndex, fatherIndex, totalIndex, percIndex, gradeIndex].filter(i => i >= 0));
-          let subjectCols = [];
-          for (let i = 0; i < headers.length; i++) {
-            if (!excluded.has(i)) subjectCols.push(i);
-          }
-          if (subjectCols.length > 6) subjectCols = subjectCols.slice(0, 6);
-
-          let tableRows = subjectCols.map(i => {
-            const subjName = headers[i] || ('Subject ' + (i+1));
-            const mark = student[i] !== undefined ? student[i] : '';
-            return `<tr><td>${subjName}</td><td>${mark}</td></tr>`;
-          }).join('');
-
-          const totalVal = (totalIndex >= 0 ? student[totalIndex] : '');
-          const percVal = (percIndex >= 0 ? student[percIndex] : '');
-          const gradeVal = (gradeIndex >= 0 ? student[gradeIndex] : '');
-
-          resultDiv.innerHTML = `
-            <div class="result-card">
-              <h3>Name: ${student[nameIndex] || ''}</h3>
-              <p>Father Name: ${student[fatherIndex] || ''}</p>
-              <p>Test Type: Monthly Test</p>
-              <table class="result-table" role="table" aria-label="Monthly marks">
-                <thead><tr><th>Subject</th><th>Marks</th></tr></thead>
-                <tbody>${tableRows}</tbody>
-              </table>
-              <p><strong>Total:</strong> ${totalVal}</p>
-              <p><strong>Percentage:</strong> ${percVal}</p>
-              <p><strong>Grade:</strong> ${gradeVal}</p>
-            </div>
-          `;
-          resultDiv.style.display = "block";
-          return;
-        }
-
-        const chapterIndex = headers.findIndex(h => /chapter/i.test(h));
-        const marksIndex = headers.findIndex(h => /mark/i.test(h));
-        const gradeIndex = headers.findIndex(h => /grade/i.test(h));
-        const chapterInfo = (chapterIndex !== -1 && student[chapterIndex]) ? `<p>Chapter: ${student[chapterIndex]}</p>` : "";
-
-        resultDiv.innerHTML = `
-          <div class="result-card">
-            <h3>Name: ${student[nameIndex] || ''}</h3>
-            <p>Father Name: ${student[fatherIndex] || ''}</p>
-            <p>Subject: ${subject}</p>
-            <p>Test Type: Unit Test</p>
-            ${chapterInfo}
-            <p>Marks: ${marksIndex >= 0 ? student[marksIndex] : ''}</p>
-            <p>Grade: ${gradeIndex >= 0 ? student[gradeIndex] : ''}</p>
-          </div>
-        `;
-        resultDiv.style.display = "block";
+        let tableRows = "";
+        headers.forEach((h, i) => {
+          tableRows += `<tr><th>${h}</th><td>${student[i] || ''}</td></tr>`;
+        });
+        document.getElementById("results").innerHTML = `<div class='result-card'><table>${tableRows}</table></div>`;
       } catch (err) {
-        loadingDiv.style.display = "none";
-        console.error(err);
-        resultDiv.innerHTML = `<p>Error: ${err.message}</p>`;
-        resultDiv.style.display = "block";
+        document.getElementById("results").innerHTML = `<p style='color:red;'>Error fetching data: ${err}</p>`;
       }
     }
   </script>
-
-  <footer style="text-align:center; margin-top:40px; color:#334155; font-size:14px;">
+<footer style="text-align:center; margin-top:40px; color:#334155; font-size:14px;">
     <hr style="margin-bottom: 10px;"/>
     <p><strong>Developed and Maintained by Siddaram Diggikar, Dept. of Computer science</strong></p>
   </footer>
 </body>
 </html>
-
