@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -237,39 +239,50 @@
       const clearBtn = document.querySelector(".clear-btn");
 
       function toggleSubject() {
-        const testType = testTypeSelect.value;
-        const course = courseSelect.value;
-        subjectSelect.innerHTML = "<option value=''>Select Subject</option>";
-        if (testType === "Unit") {
-          subjectSelect.style.display = "block";
-          if (course.includes("Science")) {
-            subjectSelect.innerHTML += `<option value="PCMB">PCMB</option><option value="ComputerScience">Computer Science</option>`;
-          } else if (course.includes("Commerce")) {
-            subjectSelect.innerHTML += `<option value="Accountancy">Accountancy</option><option value="ComputerScience">Computer Science</option><option value="BusinessStudies">Business Studies</option>`;
-          }
-        } else {
-          subjectSelect.style.display = "none";
-        }
-      }
+  const testType = testTypeSelect.value;
+  const course = courseSelect.value;
+  const year = yearSelect.value;
+  subjectSelect.innerHTML = "<option value=''>Select Subject</option>";
+
+  if (testType === "Unit") {
+    subjectSelect.style.display = "block";
+
+    if (year === "1" && course === "Science1") {
+      subjectSelect.innerHTML += `<option value="ComputerScience">Computer Science</option>`;
+    } else if (year === "2" && course === "Science2") {
+      subjectSelect.innerHTML += `<option value="ComputerScience">Computer Science</option>`;
+    } else if (year === "1" && course === "Commerce1") {
+      subjectSelect.innerHTML += `
+        <option value="Accountancy">Accountancy</option>
+        <option value="Business">Business</option>
+        <option value="Economics">Economics</option>
+        <option value="ComputerScience">Computer Science</option>`;
+    } else if (year === "2" && course === "Commerce2") {
+      subjectSelect.innerHTML += `
+        <option value="Accountancy">Accountancy</option>
+        <option value="Business">Business</option>
+        <option value="Economics">Economics</option>
+        <option value="ComputerScience">Computer Science</option>`;
+    }
+  } else {
+    subjectSelect.style.display = "none";
+  }
+}
+
+
 
       function getSheetName(year, course, testType, subject) {
-        if (testType === "Monthly") {
-            if (year === "1" && course === "Science1") return "1_Monthly_Science1";
-            if (year === "2" && course === "Science2") return "2_Monthly_Science2";
-            if (year === "1" && course === "Commerce1") return "1_Monthly_Commerce1";
-            if (year === "2" && course === "Commerce2") return "2_Monthly_Commerce2";
-        }
-        if (testType === "Unit") {
-            if (year === "1" && course === "Science1" && subject === "PCMB") return "1_PCMB_Unit";
-            if (year === "2" && course === "Science2" && subject === "PCMB") return "2_PCMB_Unit";
-            if (year === "1" && course === "Science1" && subject === "ComputerScience") return "1_Computer_Unit";
-            if (year === "2" && course === "Science2" && subject === "ComputerScience") return "2_Computer_Unit";
-            if (year === "1" && course === "Commerce1" && subject === "Accountancy") return "1_Accountancy";
-            if (year === "2" && course === "Commerce2" && subject === "Accountancy") return "2_Accountancy";
-            if (year === "2" && course === "Commerce2" && subject === "BusinessStudies") return "2_Business";
-        }
-        return null;
-      }
+  if (testType === "Monthly") {
+    if (year === "1" && course === "Science1") return "1_Monthly_Science1";
+    if (year === "2" && course === "Science2") return "2_Monthly_Science2";
+    if (year === "1" && course === "Commerce1") return "1_Monthly_Commerce1";
+    if (year === "2" && course === "Commerce2") return "2_Monthly_Commerce2";
+  }
+  if (testType === "Unit") {
+    if (subject) return `${year}_${subject}`;  // Example: "1_Accountancy" or "2_ComputerScience"
+  }
+  return null;
+}
 
       function updateCourses() {
         const year = yearSelect.value;
