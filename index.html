@@ -1,7 +1,5 @@
 
-
-
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
@@ -182,8 +180,7 @@
     <i class="fas fa-bell"></i> <strong>Latest Notifications:</strong>
     <ul>
       <li>Unit Test Results are now available.</li>
-      <li>I Govt. Test scheduled for 18th August.</li>
-      <li>Other subject Unit Test Results are available soon Stay Tuned....!!</li>
+     <li>Other subject Unit Test Results are available soon Stay Tuned....!!</li>
     </ul>
   </div>
 
@@ -248,17 +245,35 @@
     subjectSelect.style.display = "block";
 
     if (year === "1" && course === "Science1") {
-      subjectSelect.innerHTML += `<option value="ComputerScience">Computer Science</option>`;
+      subjectSelect.innerHTML += `
+	<option value="English">English</option>
+               <option value="Kannada/Hindi">Kannada/Hindi</option>        
+               <option value="Physics">Physics</option>
+               <option value="Chemistry">Chemistry</option>
+               <option value="Maths">Maths</option>
+               <option value="Biology">Biology</option>
+               <option value="ComputerScience">Computer Science</option>`;
     } else if (year === "2" && course === "Science2") {
-      subjectSelect.innerHTML += `<option value="ComputerScience">Computer Science</option>`;
+      subjectSelect.innerHTML += `
+	<option value="English">English</option>
+               <option value="Kannada/Hindi">Kannada/Hindi</option>        
+               <option value="Physics">Physics</option>
+               <option value="Chemistry">Chemistry</option>
+               <option value="Maths">Maths</option>
+               <option value="Biology">Biology</option>
+               <option value="ComputerScience">Computer Science</option>`;
     } else if (year === "1" && course === "Commerce1") {
       subjectSelect.innerHTML += `
-        <option value="Accountancy">Accountancy</option>
-        <option value="Business">Business</option>
-        <option value="Economics">Economics</option>
-        <option value="ComputerScience">Computer Science</option>`;
+	<option value="English">English</option>
+               <option value="Kannada/Hindi">Kannada/Hindi</option>        
+               <option value="Accountancy">Accountancy</option>
+               <option value="Business">Business</option>
+               <option value="Economics">Economics</option>
+               <option value="ComputerScience">Computer Science</option>`;
     } else if (year === "2" && course === "Commerce2") {
       subjectSelect.innerHTML += `
+        <option value="English">English</option>
+        <option value="Kannada/Hindi">Kannada/Hindi</option>
         <option value="Accountancy">Accountancy</option>
         <option value="Business">Business</option>
         <option value="Economics">Economics</option>
